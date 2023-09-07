@@ -60,7 +60,20 @@ let postgresstring = postgresstring.unwrap();
     postgresstring.parse().unwrap(),
     NoTls,
 );
+
+let manager2: bb8_postgres::PostgresConnectionManager<NoTls> = bb8_postgres::PostgresConnectionManager::new(
+    postgresstring.parse().unwrap(),
+    NoTls,
+);
 let pool  = bb8::Pool::builder().build(manager).await.unwrap();
+
+let pool2  = bb8::Pool::builder().build(manager2).await.unwrap();
+
+let configclient = pool2.get().await.unwrap();
+
+configclient.batch_execute("CREATE SCHEMA IF NOT EXISTS directory;").await.unwrap();
+
+println!("Creating base data");
 
 let firebase_auth = tokio::task::spawn_blocking(|| FirebaseAuth::new("la-movement-directory"))
 .await
