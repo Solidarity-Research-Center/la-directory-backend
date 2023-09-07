@@ -1,16 +1,17 @@
 use actix_web::{middleware, web, App, HttpRequest, HttpResponse, HttpServer, Responder};
 use actix_web::middleware::DefaultHeaders;
-use r2d2::Pool;
+use bb8::Pool;
 use r2d2_postgres::{postgres::NoTls, PostgresConnectionManager};
 use firebase_auth::{FirebaseAuth, FirebaseUser};
 
-async fn index(pool: web::Data<Pool<PostgresConnectionManager<NoTls>>>,req: HttpRequest) -> impl Responder {
+#[actix_web::get("/")]
+pub async fn index(pool: web::Data<bb8::Pool<bb8_postgres::PostgresConnectionManager<NoTls>>>, req: HttpRequest) -> impl Responder {
     HttpResponse::Ok()
         .insert_header(("Content-Type", "text/plain"))
         .body("Hello world!")
 }
 
-async fn testfirebase(pool: web::Data<Pool<PostgresConnectionManager<NoTls>>>,firebase_auth: web::Data<FirebaseAuth>,req: HttpRequest) -> impl Responder {
+async fn testfirebase(pool: web::Data<bb8::Pool<bb8_postgres::PostgresConnectionManager<NoTls>>>,firebase_auth: web::Data<FirebaseAuth>,req: HttpRequest) -> impl Responder {
     
         let token = (&req).headers().get("Authorization");
 
@@ -44,12 +45,12 @@ async fn main() -> std::io::Result<()> {
 
 let postgresstring = postgresstring.unwrap();
 
-// Connect to the database.
-let manager: PostgresConnectionManager<NoTls> = PostgresConnectionManager::new(
+   // Connect to the database.
+   let manager: bb8_postgres::PostgresConnectionManager<NoTls> = bb8_postgres::PostgresConnectionManager::new(
     postgresstring.parse().unwrap(),
     NoTls,
 );
-let pool: Pool<PostgresConnectionManager<NoTls>> = r2d2::Pool::new(manager).unwrap();
+let pool  = bb8::Pool::builder().build(manager).await.unwrap();
 
 let firebase_auth = tokio::task::spawn_blocking(|| FirebaseAuth::new("la-movement-directory"))
 .await
@@ -68,11 +69,11 @@ let firebase_auth = tokio::task::spawn_blocking(|| FirebaseAuth::new("la-movemen
             )
         .app_data(actix_web::web::Data::new(pool.clone()))
         .app_data(actix_web::web::Data::new(firebase_auth.clone()))
-            .route("/", web::get().to(index))
-            .route("/testfirebase", web::post().to(testfirebase))
-            .route("/testfirebase/", web::post().to(testfirebase))
+        .service(index)
     })
     .workers(4);
+
+    
 
     println!("everything set up");
 
