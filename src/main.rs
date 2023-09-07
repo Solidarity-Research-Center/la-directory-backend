@@ -93,6 +93,7 @@ let firebase_auth = tokio::task::spawn_blocking(|| FirebaseAuth::new("la-movemen
         .app_data(actix_web::web::Data::new(pool.clone()))
         .app_data(actix_web::web::Data::new(firebase_auth.clone()))
         .service(index)
+        .service(gettime)
     })
     .workers(4);
 
