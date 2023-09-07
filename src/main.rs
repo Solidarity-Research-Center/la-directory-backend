@@ -21,6 +21,7 @@ pub async fn gettime(pool: web::Data<bb8::Pool<bb8_postgres::PostgresConnectionM
         .body(time.to_string())
 }
 
+#[actix_web::get("/testfirebase")]
 async fn testfirebase(pool: web::Data<bb8::Pool<bb8_postgres::PostgresConnectionManager<NoTls>>>,firebase_auth: web::Data<FirebaseAuth>,req: HttpRequest) -> impl Responder {
     
         let token = (&req).headers().get("Authorization");
@@ -94,6 +95,7 @@ let firebase_auth = tokio::task::spawn_blocking(|| FirebaseAuth::new("la-movemen
         .app_data(actix_web::web::Data::new(firebase_auth.clone()))
         .service(index)
         .service(gettime)
+        .service(testfirebase)
     })
     .workers(4);
 
