@@ -11,7 +11,7 @@ actix-rt = "2.8.0"
 actix-web = "4.3.1"
 arguments = "0.7.2"
 bb8 = "0.8.1"
-bb8-postgres = "0.8.1"
+bb8-postgres = {version = "0.8.1", features = ["with-time-0_3", "with-chrono-0_4", "with-geo-types-0_6"]}
 chrono = {version = "0.4.26",features = ["serde"]}
 diesel = {version = "2.1.0", features = ["postgres", "r2d2", "uuid", "chrono"]}
 diesel_migrations = { version = "2.1.0"}
@@ -20,9 +20,9 @@ firebase-auth = "0.2.1"
 lazy_static = "1.4.0"
 listenfd = "1.0.1"
 r2d2 = "0.8.10"
-r2d2_postgres = "0.18.1"
+r2d2_postgres = {version = "0.18.1"}
 serde = "1.0.186"
 serde_json = "1.0.105"
 tokio = "1.32.0"
-tokio-postgres = "0.7.9"
+tokio-postgres = {version = "0.7.9", features = ["with-uuid-0_8", "with-time-0_3"]}
 uuid = "1.4.1"

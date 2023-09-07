@@ -11,6 +11,16 @@ pub async fn index(pool: web::Data<bb8::Pool<bb8_postgres::PostgresConnectionMan
         .body("Hello world!")
 }
 
+#[actix_web::get("/gettime")]
+pub async fn gettime(pool: web::Data<bb8::Pool<bb8_postgres::PostgresConnectionManager<NoTls>>>, req:HttpRequest) -> impl Responder {
+    let conn = pool.get().await.unwrap();
+    let rows = conn.query("SELECT NOW()", &[]).await.unwrap();
+    let time: chrono::DateTime<chrono::Utc> = rows[0].get(0);
+    HttpResponse::Ok()
+        .insert_header(("Content-Type", "text/plain"))
+        .body(time.to_string())
+}
+
 async fn testfirebase(pool: web::Data<bb8::Pool<bb8_postgres::PostgresConnectionManager<NoTls>>>,firebase_auth: web::Data<FirebaseAuth>,req: HttpRequest) -> impl Responder {
     
         let token = (&req).headers().get("Authorization");

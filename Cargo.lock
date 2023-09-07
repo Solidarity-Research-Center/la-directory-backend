@@ -292,6 +292,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "approx"
+version = "0.3.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f0e60b75072ecd4168020818c0107f2857bb6c4e64252d8d3983f6263b40a5c3"
+dependencies = [
+ "num-traits",
+]
+
+[[package]]
 name = "arguments"
 version = "0.7.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -612,7 +621,7 @@ dependencies = [
  "itoa",
  "pq-sys",
  "r2d2",
- "uuid",
+ "uuid 1.4.1",
 ]
 
 [[package]]
@@ -867,6 +876,16 @@ checksum = "85649ca51fd72272d7821adaf274ad91c288277713d9c18820d8499a7ff69e9a"
 dependencies = [
  "typenum",
  "version_check",
+]
+
+[[package]]
+name = "geo-types"
+version = "0.6.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7583925a1fdb2b450c461fe0878ba6e99a8f1332b2bc72fb1383fd25b2f13bf2"
+dependencies = [
+ "approx",
+ "num-traits",
 ]
 
 [[package]]
@@ -1131,7 +1150,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e0500463acd96259d219abb05dc57e5a076ef04b2db9a2112846929b5f174c96"
 dependencies = [
  "libc",
- "uuid",
+ "uuid 1.4.1",
  "winapi",
 ]
 
@@ -1192,7 +1211,7 @@ dependencies = [
  "serde_json",
  "tokio",
  "tokio-postgres",
- "uuid",
+ "uuid 1.4.1",
 ]
 
 [[package]]
@@ -1526,8 +1545,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8d2234cdee9408b523530a9b6d2d6b373d1db34f6a8e51dc03ded1828d7fb67c"
 dependencies = [
  "bytes",
+ "chrono",
  "fallible-iterator",
+ "geo-types",
  "postgres-protocol",
+ "time 0.3.27",
+ "uuid 0.8.2",
 ]
 
 [[package]]
@@ -2304,6 +2327,12 @@ dependencies = [
  "idna",
  "percent-encoding",
 ]
+
+[[package]]
+name = "uuid"
+version = "0.8.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bc5cf98d8186244414c848017f0e2676b3fcb46807f6668a97dfe67359a3c4b7"
 
 [[package]]
 name = "uuid"
