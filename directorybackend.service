@@ -1,8 +1,8 @@
 [Unit]
-Description=transitbackend for kylerchin.com
+Description=LA Directory Rust Backend
 
 [Service]
-WorkingDirectory= /opt/catenary-backend
+WorkingDirectory= /opt/la-directory-backend
 ExecStart=cargo run -- --postgres "host=localhost user=postgres password=PASSWORD"
 
 Restart=always
