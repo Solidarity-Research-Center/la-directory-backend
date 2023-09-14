@@ -4,6 +4,21 @@ use bb8::Pool;
 use r2d2_postgres::{postgres::NoTls, PostgresConnectionManager};
 use firebase_auth::{FirebaseAuth, FirebaseUser};
 
+struct Org {
+    name: String,
+    description: String,
+    website: String,
+    phone: String,
+    banner_url: String,
+    profile_url: String,
+    University: Option<String>,
+    Neighbourhood: Option<String>,
+    City: Option<String>,
+    State: Option<String>,
+    Zip: Option<String>,
+    auth_emails: Vec<String>
+}
+
 #[actix_web::get("/")]
 pub async fn index(pool: web::Data<bb8::Pool<bb8_postgres::PostgresConnectionManager<NoTls>>>, req: HttpRequest) -> impl Responder {
     HttpResponse::Ok()
@@ -19,6 +34,16 @@ pub async fn gettime(pool: web::Data<bb8::Pool<bb8_postgres::PostgresConnectionM
     HttpResponse::Ok()
         .insert_header(("Content-Type", "text/plain"))
         .body(time.to_string())
+}
+
+#[actix_web::post("/makeorg")]
+pub async fn makeorg(pool: web::Data<bb8::Pool<bb8_postgres::PostgresConnectionManager<NoTls>>>, req:HttpRequest) ->  impl Responder {
+    let conn = pool.get().await.unwrap();
+
+    let insert = conn.query("INSERT INTO orgs ()")
+    HttpResponse::Ok()
+        .insert_header(("Content-Type", "text/plain"))
+        .body("Success")
 }
 
 async fn testfirebase(pool: web::Data<bb8::Pool<bb8_postgres::PostgresConnectionManager<NoTls>>>,firebase_auth: web::Data<FirebaseAuth>,req: HttpRequest) -> impl Responder {
