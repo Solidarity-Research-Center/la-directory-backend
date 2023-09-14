@@ -1,0 +1,16 @@
+[Unit]
+Description=LA Directory Rust Backend
+
+[Service]
+WorkingDirectory= /opt/la-directory-backend
+ExecStart=cargo run -- --postgres "host=localhost user=postgres password=PASSWORD"
+
+Restart=always
+RestartSec=1
+
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=autodeploy
+
+[Install]
+WantedBy=multi-user.target

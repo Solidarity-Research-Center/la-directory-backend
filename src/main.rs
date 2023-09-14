@@ -46,6 +46,7 @@ pub async fn makeorg(pool: web::Data<bb8::Pool<bb8_postgres::PostgresConnectionM
         .body("Success")
 }
 
+#[actix_web::get("/testfirebase")]
 async fn testfirebase(pool: web::Data<bb8::Pool<bb8_postgres::PostgresConnectionManager<NoTls>>>,firebase_auth: web::Data<FirebaseAuth>,req: HttpRequest) -> impl Responder {
     
         let token = (&req).headers().get("Authorization");
@@ -85,7 +86,20 @@ let postgresstring = postgresstring.unwrap();
     postgresstring.parse().unwrap(),
     NoTls,
 );
+
+let manager2: bb8_postgres::PostgresConnectionManager<NoTls> = bb8_postgres::PostgresConnectionManager::new(
+    postgresstring.parse().unwrap(),
+    NoTls,
+);
 let pool  = bb8::Pool::builder().build(manager).await.unwrap();
+
+let pool2  = bb8::Pool::builder().build(manager2).await.unwrap();
+
+let configclient = pool2.get().await.unwrap();
+
+configclient.batch_execute("CREATE SCHEMA IF NOT EXISTS directory;").await.unwrap();
+
+println!("Creating base data");
 
 let firebase_auth = tokio::task::spawn_blocking(|| FirebaseAuth::new("la-movement-directory"))
 .await
@@ -105,6 +119,8 @@ let firebase_auth = tokio::task::spawn_blocking(|| FirebaseAuth::new("la-movemen
         .app_data(actix_web::web::Data::new(pool.clone()))
         .app_data(actix_web::web::Data::new(firebase_auth.clone()))
         .service(index)
+        .service(gettime)
+        .service(testfirebase)
     })
     .workers(4);
 
