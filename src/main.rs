@@ -5,18 +5,20 @@ use r2d2_postgres::{postgres::NoTls, PostgresConnectionManager};
 use firebase_auth::{FirebaseAuth, FirebaseUser};
 
 struct Org {
+    id: String,
     name: String,
     description: String,
     website: String,
     phone: String,
     banner_url: String,
     profile_url: String,
-    University: Option<String>,
-    Neighbourhood: Option<String>,
-    City: Option<String>,
-    State: Option<String>,
-    Zip: Option<String>,
-    auth_emails: Vec<String>
+    university: Option<String>,
+    neighbourhood: Option<String>,
+    city: Option<String>,
+    state: Option<String>,
+    zip: Option<String>,
+    auth_emails: Vec<String>,
+    categories: Vec<String>
 }
 
 #[actix_web::get("/")]
@@ -40,7 +42,7 @@ pub async fn gettime(pool: web::Data<bb8::Pool<bb8_postgres::PostgresConnectionM
 pub async fn makeorg(pool: web::Data<bb8::Pool<bb8_postgres::PostgresConnectionManager<NoTls>>>, req:HttpRequest) ->  impl Responder {
     let conn = pool.get().await.unwrap();
 
-    let insert = conn.query("INSERT INTO orgs ()")
+    let insert = conn.query("INSERT INTO orgs ($1)", &[]);
     HttpResponse::Ok()
         .insert_header(("Content-Type", "text/plain"))
         .body("Success")
@@ -98,6 +100,23 @@ let pool2  = bb8::Pool::builder().build(manager2).await.unwrap();
 let configclient = pool2.get().await.unwrap();
 
 configclient.batch_execute("CREATE SCHEMA IF NOT EXISTS directory;").await.unwrap();
+
+configclient.batch_execute("CREATE TABLE IF NOT EXISTS orgs (
+    id text PRIMARY KEY,
+    name text,
+    description text,
+    website string,
+    phone string,
+    banner_url string,
+    profile_url string,
+    university string,
+    nieghbourhood string,
+    city string,
+    state string,
+    zip string,
+    auto_emails string[],
+    categories string[]
+)").await.unwrap();
 
 println!("Creating base data");
 
