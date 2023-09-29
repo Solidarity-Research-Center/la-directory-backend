@@ -102,6 +102,20 @@ pub async fn makeorg(pool: web::Data<bb8::Pool<bb8_postgres::PostgresConnectionM
         .body("Success")
 }
 
+#[actix_web::get("/getadminorgs")]
+async fn getadminorgs(pool: web::Data<bb8::Pool<bb8_postgres::PostgresConnectionManager<NoTls>>>,firebase_auth: web::Data<FirebaseAuth>,req: HttpRequest) -> impl Responder {
+    
+ 
+    let conn = pool.get().await.unwrap();
+
+    let orgs = conn.query("SELECT * FROM orgs;", &[]).await.unwrap();
+
+    HttpResponse::Ok()
+        .insert_header(("Content-Type", "text/plain"))
+        .body(format!("{:?}",orgs))
+   
+}
+
 #[actix_web::get("/testfirebase")]
 async fn testfirebase(pool: web::Data<bb8::Pool<bb8_postgres::PostgresConnectionManager<NoTls>>>,firebase_auth: web::Data<FirebaseAuth>,req: HttpRequest) -> impl Responder {
     
