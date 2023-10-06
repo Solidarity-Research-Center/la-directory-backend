@@ -182,6 +182,9 @@ configclient.batch_execute("CREATE TABLE IF NOT EXISTS orgs (
     city string,
     state string,
     zip string,
+    twitter string,
+    instagram string,
+    facebook string,
     auto_emails string[],
     categories string[]
 )").await.unwrap();
@@ -200,6 +203,7 @@ let firebase_auth = tokio::task::spawn_blocking(|| FirebaseAuth::new("la-movemen
                     .add(("Server", "LADirectory"))
                     .add(("Access-Control-Allow-Origin", "http://localhost:5173"))
                     .add(("Access-Control-Allow-Origin","https://directory.laforall.org"))
+                    .add(("Access-Control-Allow-Origin","https://movementdirectory.org"))
                     .add(("Access-Control-Allow-Credentials","true"))
                     .add(("Access-Control-Expose-Headers", "Server, hash, server, Hash"))
             )
@@ -208,6 +212,8 @@ let firebase_auth = tokio::task::spawn_blocking(|| FirebaseAuth::new("la-movemen
         .service(index)
         .service(gettime)
         .service(testfirebase)
+        .service(makeorg)
+        .service(getadminorgs)
     })
     .workers(4);
 
