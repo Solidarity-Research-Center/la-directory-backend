@@ -161,38 +161,6 @@ println!("Making pools");
 
 let pool  = bb8::Pool::builder().build(manager).await.unwrap();
 
-println!("making pool 2");
-
-let pool2 = pool.clone();
-
-println!("making config client");
-
-let configclient = pool2.get().await.unwrap();
-
-configclient.batch_execute("CREATE SCHEMA IF NOT EXISTS directory;").await.unwrap();
-
-configclient.batch_execute("CREATE TABLE IF NOT EXISTS orgs (
-    id text PRIMARY KEY,
-    name text,
-    description text,
-    website text,
-    phone text,
-    banner_url text,
-    profile_url text,
-    university text,
-    neighbourhood text,
-    city text,
-    state text,
-    zip text,
-    twitter text,
-    instagram text,
-    facebook text,
-    auto_emails text[],
-    categories text[]
-)").await.unwrap();
-
-println!("Creating base data");
-
 let firebase_auth = tokio::task::spawn_blocking(|| FirebaseAuth::new("la-movement-directory"))
 .await
 .expect("panic init FirebaseAuth");
