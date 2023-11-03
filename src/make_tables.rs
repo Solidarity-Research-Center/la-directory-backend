@@ -1,4 +1,5 @@
-async fn main() -> std::io::Result<()> {
+#[tokio::main]
+async fn main() {
 
     let postgresstring = arguments::parse(std::env::args())
     .unwrap()
@@ -7,9 +8,9 @@ async fn main() -> std::io::Result<()> {
 let postgresstring = postgresstring.unwrap();
 
    // Connect to the database.
-   let manager: bb8_postgres::PostgresConnectionManager<NoTls> = bb8_postgres::PostgresConnectionManager::new(
+   let manager: bb8_postgres::PostgresConnectionManager<tokio_postgres::NoTls> = bb8_postgres::PostgresConnectionManager::new(
     postgresstring.parse().unwrap(),
-    NoTls,
+    tokio_postgres::NoTls,
 );
 
 println!("Making pools");
