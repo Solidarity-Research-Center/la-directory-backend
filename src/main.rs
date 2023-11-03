@@ -157,9 +157,15 @@ let postgresstring = postgresstring.unwrap();
     NoTls,
 );
 
+println!("Making pools");
+
 let pool  = bb8::Pool::builder().build(manager).await.unwrap();
 
+println!("making pool 2");
+
 let pool2 = pool.clone();
+
+println!("making config client");
 
 let configclient = pool2.get().await.unwrap();
 
