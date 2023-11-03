@@ -157,13 +157,9 @@ let postgresstring = postgresstring.unwrap();
     NoTls,
 );
 
-let manager2: bb8_postgres::PostgresConnectionManager<NoTls> = bb8_postgres::PostgresConnectionManager::new(
-    postgresstring.parse().unwrap(),
-    NoTls,
-);
 let pool  = bb8::Pool::builder().build(manager).await.unwrap();
 
-let pool2  = bb8::Pool::builder().build(manager2).await.unwrap();
+let pool2 = pool.clone();
 
 let configclient = pool2.get().await.unwrap();
 
@@ -173,20 +169,20 @@ configclient.batch_execute("CREATE TABLE IF NOT EXISTS orgs (
     id text PRIMARY KEY,
     name text,
     description text,
-    website string,
-    phone string,
-    banner_url string,
-    profile_url string,
-    university string,
-    neighbourhood string,
-    city string,
-    state string,
-    zip string,
-    twitter string,
-    instagram string,
-    facebook string,
-    auto_emails string[],
-    categories string[]
+    website text,
+    phone text,
+    banner_url text,
+    profile_url text,
+    university text,
+    neighbourhood text,
+    city text,
+    state text,
+    zip text,
+    twitter text,
+    instagram text,
+    facebook text,
+    auto_emails text[],
+    categories text[]
 )").await.unwrap();
 
 println!("Creating base data");
